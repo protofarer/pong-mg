@@ -38,7 +38,7 @@ public class Game1 : Game
     protected override void LoadContent()
     {
         _spriteBatch = new SpriteBatch(GraphicsDevice);
-        paddleOne = new Paddle(_spriteBatch, GraphicsDevice, 25, 75);
+        paddleOne = new Paddle(_spriteBatch, GraphicsDevice, 10, 50);
         font = Content.Load<SpriteFont>("Score");
 
         // TODO: use this.Content to load your game content here
@@ -68,8 +68,8 @@ public class Game1 : Game
         int frameRate = (int)(1 / (float)gameTime.ElapsedGameTime.TotalSeconds);
 
         _spriteBatch.Begin();
-        _spriteBatch.DrawString(font, $"Score: {score}", new Vector2(25, 25), Color.Red);
-        _spriteBatch.DrawString(font, $"fps: {frameRate}", new Vector2(25, 50), Color.Green);
+        _spriteBatch.DrawString(font, $"Score: {score}", new Vector2(5, 5), Color.Red);
+        _spriteBatch.DrawString(font, $"fps: {frameRate}", new Vector2(5, 20), Color.Green);
         _spriteBatch.End();
 
         // * END: Render all
@@ -78,7 +78,7 @@ public class Game1 : Game
         // * Render to screen
         GraphicsDevice.SetRenderTarget(null);
         _spriteBatch.Begin();
-        _spriteBatch.Draw(_renderTarget, new Vector2(WINDOW_WIDTH, WINDOW_HEIGHT), Color.White);
+        _spriteBatch.Draw(_renderTarget, new Rectangle(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT), Color.White);
         _spriteBatch.End();
 
         base.Draw(gameTime);
