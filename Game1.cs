@@ -13,6 +13,13 @@ public class Game1 : Game
     private SpriteFont font;
     private int score;
 
+    private RenderTarget2D _renderTarget;
+
+    private const int VIRTUAL_WIDTH = 200;
+    private const int VIRTUAL_HEIGHT = 100;
+    private const int WINDOW_WIDTH = 800;
+    private const int WINDOW_HEIGHT = 400;
+
     public Game1()
     {
         _graphics = new GraphicsDeviceManager(this);
@@ -24,6 +31,7 @@ public class Game1 : Game
 
     protected override void Initialize()
     {
+        _renderTarget = new RenderTarget2D(GraphicsDevice, VIRTUAL_WIDTH, VIRTUAL_HEIGHT);  // ! unsure if correct graphics/graphicsdevice
         base.Initialize();
     }
 
@@ -48,6 +56,12 @@ public class Game1 : Game
 
     protected override void Draw(GameTime gameTime)
     {
+        // * GPU render to _renderTarget
+        GraphicsDevice.SetRenderTarget(_renderTarget);
+
+
+        // * START: Render all
+
         GraphicsDevice.Clear(Color.CornflowerBlue);
         paddleOne.Draw();
         
@@ -56,6 +70,15 @@ public class Game1 : Game
         _spriteBatch.Begin();
         _spriteBatch.DrawString(font, $"Score: {score}", new Vector2(25, 25), Color.Red);
         _spriteBatch.DrawString(font, $"fps: {frameRate}", new Vector2(25, 50), Color.Green);
+        _spriteBatch.End();
+
+        // * END: Render all
+
+
+        // * Render to screen
+        GraphicsDevice.SetRenderTarget(null);
+        _spriteBatch.Begin();
+        _spriteBatch.Draw(_renderTarget, new Vector2(WINDOW_WIDTH, WINDOW_HEIGHT), Color.White);
         _spriteBatch.End();
 
         base.Draw(gameTime);
