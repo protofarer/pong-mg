@@ -77,7 +77,12 @@ public class Game1 : Game
 
         // * Render to screen
         GraphicsDevice.SetRenderTarget(null);
-        _spriteBatch.Begin();
+        // _spriteBatch.Begin();
+    _spriteBatch.Begin(
+      SpriteSortMode.BackToFront, 
+      BlendState.AlphaBlend, 
+      SamplerState.PointClamp
+    );
         _spriteBatch.Draw(_renderTarget, new Rectangle(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT), Color.White);
         _spriteBatch.End();
 
