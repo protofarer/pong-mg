@@ -10,6 +10,8 @@ public class Game1 : Game
     private SpriteBatch _spriteBatch;
 
     private Paddle paddleOne;
+    private SpriteFont font;
+    private int score;
 
     public Game1()
     {
@@ -29,6 +31,7 @@ public class Game1 : Game
     {
         _spriteBatch = new SpriteBatch(GraphicsDevice);
         paddleOne = new Paddle(_spriteBatch, GraphicsDevice, 200, 200);
+        font = Content.Load<SpriteFont>("Score");
 
         // TODO: use this.Content to load your game content here
     }
@@ -38,8 +41,7 @@ public class Game1 : Game
         if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
             Exit();
 
-        // TODO polymorphic collides function
-
+        score = ++score == 100 ? 0 : score;
 
         base.Update(gameTime);
     }
@@ -49,8 +51,10 @@ public class Game1 : Game
         GraphicsDevice.Clear(Color.CornflowerBlue);
         paddleOne.Draw();
         
-
-        // TODO: Add your drawing code here
+        float frameRate = 1 / (float)gameTime.ElapsedGameTime.TotalSeconds;
+        _spriteBatch.Begin();
+        _spriteBatch.DrawString(font, $"Score: {score}", new Vector2(25, 25), Color.Green);
+        _spriteBatch.End();
 
         base.Draw(gameTime);
     }
