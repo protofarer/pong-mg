@@ -2,23 +2,17 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Entity.Paddle;
+using static Constants;
 namespace pong_mg;
 
 public class Game1 : Game
 {
     private GraphicsDeviceManager _graphics;
     private SpriteBatch _spriteBatch;
-
     private Paddle paddleOne;
     private SpriteFont sfontSilkscreen;
     private int score;
-
     private RenderTarget2D _renderTarget;
-
-    private const int VIRTUAL_WIDTH = 200;
-    private const int VIRTUAL_HEIGHT = 200;
-    private const int WINDOW_WIDTH = 800;
-    private const int WINDOW_HEIGHT = 800;
 
     public Game1()
     {
@@ -42,7 +36,7 @@ public class Game1 : Game
     protected override void LoadContent()
     {
         _spriteBatch = new SpriteBatch(GraphicsDevice);
-        paddleOne = new Paddle(_spriteBatch, GraphicsDevice, 5, 100);
+        paddleOne = new Paddle(this, _spriteBatch, 5, 100);
         sfontSilkscreen = Content.Load<SpriteFont>("silkscreen");
     }
 
@@ -51,6 +45,15 @@ public class Game1 : Game
         if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed 
             || Keyboard.GetState().IsKeyDown(Keys.Escape))
             Exit();
+
+        if (Keyboard.GetState().IsKeyDown(Keys.W)) 
+        {
+            paddleOne.moveUp();
+        } 
+        else if (Keyboard.GetState().IsKeyDown(Keys.S)) 
+        {
+            paddleOne.moveDown();
+        }
 
         score = ++score == 100 ? 0 : score;
 
