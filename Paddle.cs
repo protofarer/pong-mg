@@ -37,9 +37,7 @@ public class Paddle
     }
     rectTexture.SetData(fillRect);
 
-    _spriteBatch.Begin();
     _spriteBatch.Draw(rectTexture, origin, Color.White);
-    _spriteBatch.End();
 
   }
 }

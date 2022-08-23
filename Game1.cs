@@ -66,13 +66,13 @@ public class Game1 : Game
         // * START: Render all
 
         GraphicsDevice.Clear(Color.CornflowerBlue);
-        paddleOne.Draw();
         
         int frameRate = (int)(1 / (float)gameTime.ElapsedGameTime.TotalSeconds);
 
         _spriteBatch.Begin();
         _spriteBatch.DrawString(sfontSilkscreen, $"Score: {score}", new Vector2(5, 5), Color.Red);
         _spriteBatch.DrawString(sfontSilkscreen, $"fps: {frameRate}", new Vector2(5, 20), Color.Green);
+        paddleOne.Draw();
         _spriteBatch.End();
 
         // * END: Render all
