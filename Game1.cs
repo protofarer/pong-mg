@@ -10,19 +10,23 @@ public class Game1 : Game
     private SpriteBatch _spriteBatch;
 
     private Paddle paddleOne;
-    private SpriteFont font;
+    private SpriteFont sfontSilkscreen;
     private int score;
 
     private RenderTarget2D _renderTarget;
 
     private const int VIRTUAL_WIDTH = 200;
-    private const int VIRTUAL_HEIGHT = 100;
+    private const int VIRTUAL_HEIGHT = 200;
     private const int WINDOW_WIDTH = 800;
-    private const int WINDOW_HEIGHT = 400;
+    private const int WINDOW_HEIGHT = 800;
 
     public Game1()
     {
         _graphics = new GraphicsDeviceManager(this);
+        _graphics.PreferredBackBufferWidth = WINDOW_WIDTH;
+        _graphics.PreferredBackBufferHeight = WINDOW_HEIGHT;
+        _graphics.ApplyChanges();
+
         Content.RootDirectory = "Content";
         IsMouseVisible = true;
         IsFixedTimeStep = false;
@@ -38,15 +42,14 @@ public class Game1 : Game
     protected override void LoadContent()
     {
         _spriteBatch = new SpriteBatch(GraphicsDevice);
-        paddleOne = new Paddle(_spriteBatch, GraphicsDevice, 10, 50);
-        font = Content.Load<SpriteFont>("Score");
-
-        // TODO: use this.Content to load your game content here
+        paddleOne = new Paddle(_spriteBatch, GraphicsDevice, 5, 100);
+        sfontSilkscreen = Content.Load<SpriteFont>("silkscreen");
     }
 
     protected override void Update(GameTime gameTime)
     {
-        if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
+        if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed 
+            || Keyboard.GetState().IsKeyDown(Keys.Escape))
             Exit();
 
         score = ++score == 100 ? 0 : score;
@@ -68,8 +71,8 @@ public class Game1 : Game
         int frameRate = (int)(1 / (float)gameTime.ElapsedGameTime.TotalSeconds);
 
         _spriteBatch.Begin();
-        _spriteBatch.DrawString(font, $"Score: {score}", new Vector2(5, 5), Color.Red);
-        _spriteBatch.DrawString(font, $"fps: {frameRate}", new Vector2(5, 20), Color.Green);
+        _spriteBatch.DrawString(sfontSilkscreen, $"Score: {score}", new Vector2(5, 5), Color.Red);
+        _spriteBatch.DrawString(sfontSilkscreen, $"fps: {frameRate}", new Vector2(5, 20), Color.Green);
         _spriteBatch.End();
 
         // * END: Render all
@@ -77,12 +80,13 @@ public class Game1 : Game
 
         // * Render to screen
         GraphicsDevice.SetRenderTarget(null);
-        // _spriteBatch.Begin();
-    _spriteBatch.Begin(
-      SpriteSortMode.BackToFront, 
-      BlendState.AlphaBlend, 
-      SamplerState.PointClamp
-    );
+
+        //  Set hard pixel edges
+        _spriteBatch.Begin(
+            SpriteSortMode.BackToFront, 
+            BlendState.AlphaBlend, 
+            SamplerState.PointClamp
+        );
         _spriteBatch.Draw(_renderTarget, new Rectangle(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT), Color.White);
         _spriteBatch.End();
 
