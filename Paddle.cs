@@ -7,8 +7,8 @@ namespace Entity.Paddle;
 
 public class Paddle
 {
-  public const int WIDTH = 1;
-  public const int HEIGHT = 20;
+  public const int WIDTH = 5;
+  public const int HEIGHT = 40;
   public const int SPEED = 3;
   public const string color = "White"; // must call an Xna.Color
   private Vector2 origin;
@@ -18,9 +18,9 @@ public class Paddle
   private SpriteBatch _spriteBatch;
   private Game _game;
 
-  public Paddle(Game game, SpriteBatch spriteBatch, int x, int y)
+  public Paddle(Game game, SpriteBatch spriteBatch, int x)
   {
-    origin = new Vector2(x, y);
+    origin = new Vector2(x, VIRTUAL_HEIGHT / 2 - HEIGHT / 2);
     _game = game;
     _spriteBatch = spriteBatch;
     _graphicsDevice = _game.GraphicsDevice;
@@ -37,8 +37,6 @@ public class Paddle
 
   public void Update() 
   {
-    // update origin based on input
-
   }
 
   public void Draw() 

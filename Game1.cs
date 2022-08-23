@@ -9,10 +9,12 @@ public class Game1 : Game
 {
     private GraphicsDeviceManager _graphics;
     private SpriteBatch _spriteBatch;
-    private Paddle paddleOne;
+    private Paddle paddleOne, paddleTwo;
     private SpriteFont sfontSilkscreen;
     private int score;
     private RenderTarget2D _renderTarget;
+    private bool isDebugOverlay = false;
+    private KeyboardState oldKBState;
 
     public Game1()
     {
@@ -36,12 +38,15 @@ public class Game1 : Game
     protected override void LoadContent()
     {
         _spriteBatch = new SpriteBatch(GraphicsDevice);
-        paddleOne = new Paddle(this, _spriteBatch, 5, 100);
+        paddleOne = new Paddle(this, _spriteBatch, 5);
+        paddleTwo = new Paddle(this, _spriteBatch, VIRTUAL_WIDTH - 5);
         sfontSilkscreen = Content.Load<SpriteFont>("silkscreen");
     }
 
     protected override void Update(GameTime gameTime)
     {
+        KeyboardState newKBState = Keyboard.GetState();
+
         if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed 
             || Keyboard.GetState().IsKeyDown(Keys.Escape))
             Exit();
@@ -54,6 +59,20 @@ public class Game1 : Game
         {
             paddleOne.moveDown();
         }
+
+        if (Keyboard.GetState().IsKeyDown(Keys.Up)) 
+        {
+            paddleTwo.moveUp();
+        } 
+        else if (Keyboard.GetState().IsKeyDown(Keys.Down)) 
+        {
+            paddleTwo.moveDown();
+        }
+
+        if (oldKBState.IsKeyDown(Keys.Q) && newKBState.IsKeyUp(Keys.Q))
+            isDebugOverlay = !isDebugOverlay;
+
+        oldKBState = newKBState;
 
         score = ++score == 100 ? 0 : score;
 
@@ -74,8 +93,10 @@ public class Game1 : Game
 
         _spriteBatch.Begin();
         _spriteBatch.DrawString(sfontSilkscreen, $"Score: {score}", new Vector2(5, 5), Color.Red);
-        _spriteBatch.DrawString(sfontSilkscreen, $"fps: {frameRate}", new Vector2(5, 20), Color.Green);
+        if (isDebugOverlay)
+            _spriteBatch.DrawString(sfontSilkscreen, $"fps: {frameRate}", new Vector2(VIRTUAL_WIDTH - 50, 5), Color.Green);
         paddleOne.Draw();
+        paddleTwo.Draw();
         _spriteBatch.End();
 
         // * END: Render all
