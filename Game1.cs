@@ -52,8 +52,10 @@ public class Game1 : Game
         paddleOne.Draw();
         
         float frameRate = 1 / (float)gameTime.ElapsedGameTime.TotalSeconds;
+
         _spriteBatch.Begin();
-        _spriteBatch.DrawString(font, $"Score: {score}", new Vector2(25, 25), Color.Green);
+        _spriteBatch.DrawString(font, $"Score: {score}", new Vector2(25, 25), Color.Red);
+        _spriteBatch.DrawString(font, $"fps: {frameRate}", new Vector2(300, 25), Color.Green);
         _spriteBatch.End();
 
         base.Draw(gameTime);
