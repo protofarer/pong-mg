@@ -15,6 +15,7 @@ public class Game1 : Game
     private Paddle paddleOne, paddleTwo;
     private Ball ball;
     private SpriteFont sfontSilkscreen;
+    private SpriteFont sfontDebug;
     private int scoreTwo, scoreOne;
     private RenderTarget2D _renderTarget;
     private bool isDebugOverlay = false;
@@ -61,6 +62,7 @@ public class Game1 : Game
         paddleTwo = new Paddle(this, _spriteBatch, VIRTUAL_WIDTH - 20 - Paddle.WIDTH, true);
         ball = new Ball(this, _spriteBatch);
         sfontSilkscreen = Content.Load<SpriteFont>("silkscreen");
+        sfontDebug = Content.Load<SpriteFont>("DebugFont");
     }
 
     protected override void Update(GameTime gameTime)
@@ -114,14 +116,28 @@ public class Game1 : Game
 
         ball.Update();
 
+        // ? emit score event for respective player
+        if (ball.origin.X < 0)
+        {
+            scoreTwo++;
+            ball.ResetBall();
+        }
+        else if (ball.origin.X >= VIRTUAL_WIDTH - 2 * ball.R)
+        {
+            scoreOne++;
+            ball.ResetBall();
+        }
+
         if (HaveCollided(paddleOne, ball))
         {
+            ball.SpeedUp();
             ball.InvertVelocityX();
             ball.origin.X = paddleOne.origin.X + Paddle.WIDTH;
         }
         
         if (HaveCollided(paddleTwo, ball))
         {
+            ball.SpeedUp();
             ball.InvertVelocityX();
             ball.origin.X = paddleTwo.origin.X - 2 * ball.R;
         }
@@ -158,7 +174,10 @@ public class Game1 : Game
         );
 
         if (isDebugOverlay)
-            _spriteBatch.DrawString(sfontSilkscreen, $"fps: {frameRate}", new Vector2(VIRTUAL_WIDTH - 50, 5), Color.Green);
+        {
+            _spriteBatch.DrawString(sfontDebug, $"fps: {frameRate}", new Vector2(VIRTUAL_WIDTH - 75, 3), Color.Green);
+            _spriteBatch.DrawString(sfontDebug, $"sp_b: {ball._speed}", new Vector2(VIRTUAL_WIDTH - 75, 10), Color.Green);
+        }
 
         _spriteBatch.Draw(
             _netTexture, 
