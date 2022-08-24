@@ -130,16 +130,16 @@ public class Game1 : Game
 
         if (HaveCollided(paddleOne, ball))
         {
-            ball.SpeedUp();
             ball.InvertVelocityX();
-            ball.origin.X = paddleOne.origin.X + Paddle.WIDTH;
+            ball.origin.X = paddleOne.origin.X + Paddle.WIDTH + 1;
+            ball.SpeedUp();
         }
         
         if (HaveCollided(paddleTwo, ball))
         {
-            ball.SpeedUp();
             ball.InvertVelocityX();
-            ball.origin.X = paddleTwo.origin.X - 2 * ball.R;
+            ball.origin.X = paddleTwo.origin.X - 2 * ball.R - 1;
+            ball.SpeedUp();
         }
 
         base.Update(gameTime);

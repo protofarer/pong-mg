@@ -9,7 +9,7 @@ public class Ball
 {
   public int R = 3;
 
-  public const float SPEEDUP = 1.1F;
+  public const float SPEEDUP = 1.2F;
   public readonly Color color;
   public Vector2 origin;
   private Color[] fillRect;
@@ -68,6 +68,7 @@ public class Ball
   public void SpeedUp()
   {
     _speed = _speed * SPEEDUP;
+    _velocity *= SPEEDUP;
   }
 
   public void RandomizeHeading() {
