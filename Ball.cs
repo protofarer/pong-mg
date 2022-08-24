@@ -7,9 +7,9 @@ namespace Entity.Ball;
 
 public class Ball
 {
-  public const int R = 3;
+  public int R = 3;
   public readonly Color color;
-  private Vector2 origin;
+  public Vector2 origin;
   private Color[] fillRect;
   private Texture2D rectTexture;
   private SpriteBatch _spriteBatch;
@@ -48,19 +48,27 @@ public class Ball
     origin += _velocity;
     if (origin.X < 0 || origin.X >= VIRTUAL_WIDTH - 2 * R)
     {
-      _velocity.X = -_velocity.X;
+      InvertVelocityX();
     }
     if (origin.Y < 0 || origin.Y >= VIRTUAL_HEIGHT - 2 * R)
     {
-      _velocity.Y = -_velocity.Y;
+      InvertVelocityY();
     }
   }
 
   public void RandomizeHeading() {
     HeadingDegrees = 
       ( rng.Next(2) * 180 )  // pos or neg X
-      + ( rng.Next(2) * -1 )      // pos or neg Y
+      + ( rng.Next(1, 2) * -1 )      // pos or neg Y
       * ( 15 + rng.Next(46) );   // angle [15, 60]
+  }
+
+  public void InvertVelocityX() {
+    _velocity.X = -_velocity.X;
+  }
+
+  public void InvertVelocityY() {
+    _velocity.Y = -_velocity.Y;
   }
 
   public void Draw() 

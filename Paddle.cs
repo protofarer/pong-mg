@@ -9,29 +9,32 @@ public class Paddle
 {
   public const int WIDTH = 5;
   public const int HEIGHT = 40;
-  public const int SPEED = 3;
+  public const int SPEED = 5;
   public readonly Color color;
   
-  private Vector2 origin;
+  public Vector2 origin;
   private Color[] fillRect = new Color[WIDTH * HEIGHT];
   private Texture2D rectTexture;
   private SpriteBatch _spriteBatch;
   private Game _game;
 
-  public Paddle(Game game, SpriteBatch spriteBatch, int x)
+  public bool IsAI { get; private set; }
+
+  public Paddle(Game game, SpriteBatch spriteBatch, int x, bool isAI = false)
   {
     origin = new Vector2(x, VIRTUAL_HEIGHT / 2 - HEIGHT / 2);
     _game = game;
     _spriteBatch = spriteBatch;
     rectTexture = new Texture2D(game.GraphicsDevice, WIDTH, HEIGHT);
     color = Color.White;
+    IsAI = isAI;
   }
 
-  public void moveUp() {
+  public void MoveUp() {
     origin.Y = Math.Max(0, origin.Y - SPEED);
   }
 
-  public void moveDown() {
+  public void MoveDown() {
     origin.Y = Math.Min(VIRTUAL_HEIGHT - HEIGHT, origin.Y + SPEED);
   }
 

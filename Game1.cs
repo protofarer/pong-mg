@@ -5,6 +5,7 @@ using Entity.Paddle;
 using Entity.Ball;
 using static Constants;
 using static Program;
+using static Physics;
 namespace pong_mg;
 
 public class Game1 : Game
@@ -14,10 +15,13 @@ public class Game1 : Game
     private Paddle paddleOne, paddleTwo;
     private Ball ball;
     private SpriteFont sfontSilkscreen;
-    private int score;
+    private int scoreTwo, scoreOne;
     private RenderTarget2D _renderTarget;
     private bool isDebugOverlay = false;
     private KeyboardState oldKBState;
+
+    private Color[] _netFill = new Color[VIRTUAL_HEIGHT];
+    private Texture2D _netTexture;
 
     public Game1()
     {
@@ -35,14 +39,26 @@ public class Game1 : Game
     protected override void Initialize()
     {
         _renderTarget = new RenderTarget2D(GraphicsDevice, VIRTUAL_WIDTH, VIRTUAL_HEIGHT);  // ! unsure if correct graphics/graphicsdevice
+        _netTexture = new Texture2D(GraphicsDevice, 1, VIRTUAL_HEIGHT);
+        var toggleNetDraw = false;
+        for (int i = 0; i < _netFill.Length; i++)
+        {
+            if (i % 6 == 0)
+                toggleNetDraw = !toggleNetDraw;
+            
+            if (toggleNetDraw)
+                _netFill[i] = Color.White;
+        }
+        _netTexture.SetData(_netFill);
+
         base.Initialize();
     }
 
     protected override void LoadContent()
     {
         _spriteBatch = new SpriteBatch(GraphicsDevice);
-        paddleOne = new Paddle(this, _spriteBatch, 5);
-        paddleTwo = new Paddle(this, _spriteBatch, VIRTUAL_WIDTH - 5 - Paddle.WIDTH);
+        paddleOne = new Paddle(this, _spriteBatch, 20, true);
+        paddleTwo = new Paddle(this, _spriteBatch, VIRTUAL_WIDTH - 20 - Paddle.WIDTH, true);
         ball = new Ball(this, _spriteBatch);
         sfontSilkscreen = Content.Load<SpriteFont>("silkscreen");
     }
@@ -55,22 +71,31 @@ public class Game1 : Game
             || Keyboard.GetState().IsKeyDown(Keys.Escape))
             Exit();
 
-        if (Keyboard.GetState().IsKeyDown(Keys.W)) 
+        if (paddleOne.IsAI) {
+            if (ball.origin.Y < paddleOne.origin.Y + Paddle.WIDTH - ball.R)
+                paddleOne.MoveUp();
+            else if (ball.origin.Y > paddleOne.origin.Y + Paddle.WIDTH - ball.R)
+                paddleOne.MoveDown();
+        }
+        else
         {
-            paddleOne.moveUp();
-        } 
-        else if (Keyboard.GetState().IsKeyDown(Keys.S)) 
-        {
-            paddleOne.moveDown();
+            if (Keyboard.GetState().IsKeyDown(Keys.W)) 
+                paddleOne.MoveUp();
+            else if (Keyboard.GetState().IsKeyDown(Keys.S)) 
+                paddleOne.MoveDown();
         }
 
-        if (Keyboard.GetState().IsKeyDown(Keys.Up)) 
-        {
-            paddleTwo.moveUp();
-        } 
-        else if (Keyboard.GetState().IsKeyDown(Keys.Down)) 
-        {
-            paddleTwo.moveDown();
+        if (paddleTwo.IsAI) {
+            if (ball.origin.Y < paddleTwo.origin.Y + Paddle.WIDTH - ball.R)
+                paddleTwo.MoveUp();
+            else if (ball.origin.Y > paddleTwo.origin.Y + Paddle.WIDTH - ball.R)
+                paddleTwo.MoveDown();
+        }
+        else {
+            if (Keyboard.GetState().IsKeyDown(Keys.Up)) 
+                paddleTwo.MoveUp();
+            else if (Keyboard.GetState().IsKeyDown(Keys.Down)) 
+                paddleTwo.MoveDown();
         }
 
         if (oldKBState.IsKeyDown(Keys.Q) && newKBState.IsKeyUp(Keys.Q))
@@ -83,7 +108,17 @@ public class Game1 : Game
 
         ball.Update();
 
-        score = ++score == 100 ? 0 : score;
+        if (HaveCollided(paddleOne, ball))
+        {
+            ball.InvertVelocityX();
+            ball.origin.X = paddleOne.origin.X + Paddle.WIDTH;
+        }
+        
+        if (HaveCollided(paddleTwo, ball))
+        {
+            ball.InvertVelocityX();
+            ball.origin.X = paddleTwo.origin.X - 2 * ball.R;
+        }
 
         base.Update(gameTime);
     }
@@ -101,14 +136,35 @@ public class Game1 : Game
         int frameRate = (int)(1 / (float)gameTime.ElapsedGameTime.TotalSeconds);
 
         _spriteBatch.Begin();
-        _spriteBatch.DrawString(sfontSilkscreen, $"Score: {score}", new Vector2(5, 5), Color.Red);
+
+        _spriteBatch.DrawString(
+            sfontSilkscreen, 
+            $"{scoreOne}", 
+            new Vector2((float)(VIRTUAL_WIDTH * 0.2), (float)(VIRTUAL_HEIGHT * 0.05)), 
+            Color.White
+        );
+
+        _spriteBatch.DrawString(
+            sfontSilkscreen, 
+            $"{scoreTwo}", 
+            new Vector2((float)(VIRTUAL_WIDTH * 0.7), (float)(VIRTUAL_HEIGHT * 0.05)), 
+            Color.White
+        );
+
         if (isDebugOverlay)
             _spriteBatch.DrawString(sfontSilkscreen, $"fps: {frameRate}", new Vector2(VIRTUAL_WIDTH - 50, 5), Color.Green);
+
+        _spriteBatch.Draw(
+            _netTexture, 
+            new Vector2(VIRTUAL_WIDTH / 2 - 1, 0), 
+            new Color(172,172,172)
+        );
+
         paddleOne.Draw();
         paddleTwo.Draw();
         ball.Draw();
-        _spriteBatch.End();
 
+        _spriteBatch.End();
         // * END: Render all
 
 
