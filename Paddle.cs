@@ -41,7 +41,6 @@ public class Paddle
 
   public void Draw() 
   {
-    Console.WriteLine(Color.White);
     for (int i = 0; i < fillRect.Length; i++) {
         fillRect[i] = Color.White;
     }

@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Entity.Paddle;
+using Entity.Ball;
 using static Constants;
 namespace pong_mg;
 
@@ -10,6 +11,7 @@ public class Game1 : Game
     private GraphicsDeviceManager _graphics;
     private SpriteBatch _spriteBatch;
     private Paddle paddleOne, paddleTwo;
+    private Ball ball;
     private SpriteFont sfontSilkscreen;
     private int score;
     private RenderTarget2D _renderTarget;
@@ -40,6 +42,7 @@ public class Game1 : Game
         _spriteBatch = new SpriteBatch(GraphicsDevice);
         paddleOne = new Paddle(this, _spriteBatch, 5);
         paddleTwo = new Paddle(this, _spriteBatch, VIRTUAL_WIDTH - 5 - Paddle.WIDTH);
+        ball = new Ball(this, _spriteBatch);
         sfontSilkscreen = Content.Load<SpriteFont>("silkscreen");
     }
 
@@ -74,6 +77,8 @@ public class Game1 : Game
 
         oldKBState = newKBState;
 
+        ball.Update();
+
         score = ++score == 100 ? 0 : score;
 
         base.Update(gameTime);
@@ -97,6 +102,7 @@ public class Game1 : Game
             _spriteBatch.DrawString(sfontSilkscreen, $"fps: {frameRate}", new Vector2(VIRTUAL_WIDTH - 50, 5), Color.Green);
         paddleOne.Draw();
         paddleTwo.Draw();
+        ball.Draw();
         _spriteBatch.End();
 
         // * END: Render all
