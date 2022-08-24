@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Input;
 using Entity.Paddle;
 using Entity.Ball;
 using static Constants;
+using static Program;
 namespace pong_mg;
 
 public class Game1 : Game
@@ -74,6 +75,9 @@ public class Game1 : Game
 
         if (oldKBState.IsKeyDown(Keys.Q) && newKBState.IsKeyUp(Keys.Q))
             isDebugOverlay = !isDebugOverlay;
+
+        if (oldKBState.IsKeyDown(Keys.R) && newKBState.IsKeyUp(Keys.R))
+            Program.NewGame();
 
         oldKBState = newKBState;
 
