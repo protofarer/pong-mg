@@ -38,6 +38,10 @@ public class Paddle
     origin.Y = Math.Min(VIRTUAL_HEIGHT - HEIGHT, origin.Y + SPEED);
   }
 
+  public void TurnAIOff() {
+    IsAI = false;
+  }
+
   public void Update() 
   {
   }

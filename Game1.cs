@@ -104,6 +104,12 @@ public class Game1 : Game
         if (oldKBState.IsKeyDown(Keys.R) && newKBState.IsKeyUp(Keys.R))
             Program.NewGame();
 
+        if (oldKBState.IsKeyDown(Keys.T) && newKBState.IsKeyUp(Keys.T))
+        {
+            paddleOne.TurnAIOff();
+            paddleTwo.TurnAIOff();
+        }
+
         oldKBState = newKBState;
 
         ball.Update();
