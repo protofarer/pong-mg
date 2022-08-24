@@ -39,7 +39,7 @@ public class Game1 : Game
     {
         _spriteBatch = new SpriteBatch(GraphicsDevice);
         paddleOne = new Paddle(this, _spriteBatch, 5);
-        paddleTwo = new Paddle(this, _spriteBatch, VIRTUAL_WIDTH - 5);
+        paddleTwo = new Paddle(this, _spriteBatch, VIRTUAL_WIDTH - 5 - Paddle.WIDTH);
         sfontSilkscreen = Content.Load<SpriteFont>("silkscreen");
     }
 
