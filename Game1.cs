@@ -87,7 +87,7 @@ public class Game1 : Game
 
         // * START: Render all
 
-        GraphicsDevice.Clear(Color.CornflowerBlue);
+        GraphicsDevice.Clear(BG_COLOR);
         
         int frameRate = (int)(1 / (float)gameTime.ElapsedGameTime.TotalSeconds);
 

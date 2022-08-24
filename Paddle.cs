@@ -10,11 +10,11 @@ public class Paddle
   public const int WIDTH = 5;
   public const int HEIGHT = 40;
   public const int SPEED = 3;
-  public const string color = "White"; // must call an Xna.Color
+  public readonly Color color;
+  
   private Vector2 origin;
   private Color[] fillRect = new Color[WIDTH * HEIGHT];
   private Texture2D rectTexture;
-  private GraphicsDevice _graphicsDevice;
   private SpriteBatch _spriteBatch;
   private Game _game;
 
@@ -23,8 +23,8 @@ public class Paddle
     origin = new Vector2(x, VIRTUAL_HEIGHT / 2 - HEIGHT / 2);
     _game = game;
     _spriteBatch = spriteBatch;
-    _graphicsDevice = _game.GraphicsDevice;
-    rectTexture = new Texture2D(_graphicsDevice, WIDTH, HEIGHT);
+    rectTexture = new Texture2D(game.GraphicsDevice, WIDTH, HEIGHT);
+    color = Color.White;
   }
 
   public void moveUp() {
@@ -41,12 +41,13 @@ public class Paddle
 
   public void Draw() 
   {
+    Console.WriteLine(Color.White);
     for (int i = 0; i < fillRect.Length; i++) {
         fillRect[i] = Color.White;
     }
     rectTexture.SetData(fillRect);
 
-    _spriteBatch.Draw(rectTexture, origin, Color.White);
+    _spriteBatch.Draw(rectTexture, origin, color);
 
   }
 }
