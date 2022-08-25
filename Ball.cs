@@ -96,14 +96,6 @@ public class Ball
     deltaAngle = HeadingDegrees >= 0
       ? 2 * (90 - HeadingDegrees)
       : 2 * (-90 - HeadingDegrees);
-    // if (HeadingDegrees >= 0)
-    // {
-    //   deltaAngle = 2 * (90 - HeadingDegrees);
-    // }
-    // else if (HeadingDegrees < 0)
-    // {
-    //   deltaAngle = 2 * (-90 - HeadingDegrees);
-    // }
       HeadingDegrees += deltaAngle;
   }
 
