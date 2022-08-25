@@ -7,7 +7,7 @@ namespace Entity;
 
 public class Ball
 {
-  public int R = 3;
+  public int R = 1;
 
   public const float SPEEDUP = 1.2F;
   public readonly Color color;
@@ -16,7 +16,8 @@ public class Ball
   private Texture2D rectTexture;
   private SpriteBatch _spriteBatch;
   private Game _game;
-
+  private float _headingRadians;
+  public float _speed; 
   public Vector2 Velocity 
   {
     get 
@@ -28,9 +29,8 @@ public class Ball
     }
   }
 
-  private float _headingRadians;
-  
-  public float _speed; 
+  public Vector2 Center => new Vector2(origin.X + R, origin.Y + R);
+
   public float HeadingDegrees { 
     get { return (_headingRadians * 180 / (float)Math.PI) % 360; }
     set 
@@ -75,7 +75,7 @@ public class Ball
 
   public void ResetSpeed()
   {
-    _speed = 5;
+    _speed = 1;
   }
 
   public void SpeedUp()
