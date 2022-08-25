@@ -63,9 +63,8 @@ public class Game1 : Game
         sfontDebug = Content.Load<SpriteFont>("DebugFont");
 
         paddleOne = new Paddle(this, _spriteBatch, 20);
-        paddleTwo = new Paddle(this, _spriteBatch, VIRTUAL_WIDTH - 20 - Paddle.WIDTH);
-        ball = new Ball(this, _spriteBatch) { HeadingDegrees = -2.3F };
-        Console.WriteLine($"ball init vel.x, vel.y: {ball.Velocity.X},{ball.Velocity.Y}");
+        paddleTwo = new Paddle(this, _spriteBatch, VIRTUAL_WIDTH - 20 - Paddle.WIDTH, true);
+        ball = new Ball(this, _spriteBatch) { HeadingDegrees = 172 };
     }
 
     protected override void Update(GameTime gameTime)
@@ -77,9 +76,9 @@ public class Game1 : Game
             Exit();
 
         if (paddleOne.IsAI) {
-            if (ball.origin.Y < paddleOne.origin.Y + Paddle.WIDTH - ball.R)
+            if (ball.Center.Y < paddleOne.Center.Y)
                 paddleOne.MoveUp();
-            else if (ball.origin.Y > paddleOne.origin.Y + Paddle.WIDTH - ball.R)
+            else if (ball.Center.Y > paddleOne.Center.Y)
                 paddleOne.MoveDown();
         }
         else
@@ -91,9 +90,9 @@ public class Game1 : Game
         }
 
         if (paddleTwo.IsAI) {
-            if (ball.origin.Y < paddleTwo.origin.Y + Paddle.WIDTH - ball.R)
+            if (ball.Center.Y < paddleTwo.Center.Y)
                 paddleTwo.MoveUp();
-            else if (ball.origin.Y > paddleTwo.origin.Y + Paddle.WIDTH - ball.R)
+            else if (ball.Center.Y > paddleTwo.Center.Y)
                 paddleTwo.MoveDown();
         }
         else {
@@ -134,19 +133,17 @@ public class Game1 : Game
         if (HaveCollided(paddleOne, ball))
         {
             Console.WriteLine("P1 collision");
-            ball.InvertVelocityX();
+            paddleOne.HitBall(ball);
             ball.origin.X = paddleOne.origin.X + Paddle.WIDTH + 1;
-            paddleOne.AddEnglish(ball);
-            ball.SpeedUp();
         }
         
         if (HaveCollided(paddleTwo, ball))
         {
             Console.WriteLine("P2 collision");
-            ball.InvertVelocityX();
+            paddleTwo.HitBall(ball);
+
+            // Paddles don't know if they're player one or two
             ball.origin.X = paddleTwo.origin.X - 2 * ball.R - 1;
-            paddleTwo.AddEnglish(ball);
-            ball.SpeedUp();
         }
 
         base.Update(gameTime);

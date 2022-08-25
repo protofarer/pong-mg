@@ -47,12 +47,8 @@ public class Paddle
     IsAI = false;
   }
 
-  public void AddEnglish(Ball ball)
+  public void AddEnglish(Ball ball, float distO2O)
   {
-    float distO2O = ball.Center.Y - Center.Y;
-    Console.WriteLine($"dist020: {distO2O}");
-    if (Math.Abs(distO2O) > (float)HEIGHT / 6)
-    {
       float deflectionAngle = 15 
         + Math.Min(
           ((Math.Abs(distO2O) - (float)HEIGHT / 6) / ((float)HEIGHT / 3)) * 60,
@@ -61,14 +57,32 @@ public class Paddle
 
       deflectionAngle *= distO2O > 0 ? 1 : -1;
 
-      ball.HeadingDegrees = deflectionAngle;
 
+      // Making use of ball's invert method, otherwise could set deflectionAngle correctly before this block
+      // TODO refactor
       if (ball.Velocity.X > 0)
+      {
+        ball.HeadingDegrees = deflectionAngle;
         ball.InvertVelocityX();
+      }
+      else
+        ball.HeadingDegrees = deflectionAngle;
 
       Console.WriteLine($"defAng: {deflectionAngle}");
       Console.WriteLine($"ballHeadingDeg: {ball.HeadingDegrees}");
-    }
+  }
+
+  public void HitBall(Ball ball)
+  {
+    float distO2O = ball.Center.Y - Center.Y;
+    Console.WriteLine($"dist020: {distO2O}");
+
+    if (Math.Abs(distO2O) > (float)HEIGHT / 6)
+      AddEnglish(ball, distO2O);
+    else
+      ball.InvertVelocityX();
+
+    ball.SpeedUp();
   }
 
 
