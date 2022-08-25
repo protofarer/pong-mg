@@ -1,8 +1,8 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using Entity.Paddle;
-using Entity.Ball;
+using Entity;
 using static Constants;
 using static Program;
 using static Physics;
@@ -52,17 +52,21 @@ public class Game1 : Game
         }
         _netTexture.SetData(_netFill);
 
+
         base.Initialize();
     }
 
     protected override void LoadContent()
     {
         _spriteBatch = new SpriteBatch(GraphicsDevice);
-        paddleOne = new Paddle(this, _spriteBatch, 20, true);
-        paddleTwo = new Paddle(this, _spriteBatch, VIRTUAL_WIDTH - 20 - Paddle.WIDTH, true);
-        ball = new Ball(this, _spriteBatch);
         sfontSilkscreen = Content.Load<SpriteFont>("silkscreen");
         sfontDebug = Content.Load<SpriteFont>("DebugFont");
+
+        paddleOne = new Paddle(this, _spriteBatch, 20);
+        paddleTwo = new Paddle(this, _spriteBatch, VIRTUAL_WIDTH - 20 - Paddle.WIDTH, true);
+        ball = new Ball(this, _spriteBatch);
+        ball.HeadingDegrees = 180;
+        Console.WriteLine($"ball init vel.x, vel.y: {ball._velocity.X},{ball._velocity.Y}");
     }
 
     protected override void Update(GameTime gameTime)
@@ -130,15 +134,19 @@ public class Game1 : Game
 
         if (HaveCollided(paddleOne, ball))
         {
+            Console.WriteLine("P1 collision");
             ball.InvertVelocityX();
             ball.origin.X = paddleOne.origin.X + Paddle.WIDTH + 1;
+            paddleOne.AddEnglish(ball);
             ball.SpeedUp();
         }
         
         if (HaveCollided(paddleTwo, ball))
         {
+            Console.WriteLine("P2 collision");
             ball.InvertVelocityX();
             ball.origin.X = paddleTwo.origin.X - 2 * ball.R - 1;
+            paddleTwo.AddEnglish(ball);
             ball.SpeedUp();
         }
 

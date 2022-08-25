@@ -1,5 +1,4 @@
-using Entity.Paddle;
-using Entity.Ball;
+using Entity;
 
 public static class Physics {
   public static bool HaveCollided(Paddle paddle, Ball ball) {

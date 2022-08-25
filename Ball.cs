@@ -3,7 +3,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using static Constants;
 
-namespace Entity.Ball;
+namespace Entity;
 
 public class Ball
 {
@@ -16,15 +16,28 @@ public class Ball
   private Texture2D rectTexture;
   private SpriteBatch _spriteBatch;
   private Game _game;
+  public Vector2 _velocity;
+
+  public Vector2 Velocity 
+  {
+    get { return _velocity; }
+    set { _velocity = value; }
+  }
 
   private float _headingRadians;
   
   public float _speed; 
-  private float HeadingDegrees { 
+  public float HeadingDegrees { 
     get { return _headingRadians * 180 / (float)Math.PI; }
-    set { _headingRadians = value * (float)Math.PI / 180; } 
+    set 
+    { 
+      _headingRadians = value * (float)Math.PI / 180;
+      _velocity = new Vector2(
+        _speed * (float)Math.Cos(_headingRadians),
+        _speed * (float)Math.Sin(_headingRadians)
+        );
+    } 
   }
-  private Vector2 _velocity;
   private Random rng = new Random();
 
 

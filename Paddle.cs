@@ -3,7 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using System;
 using static Constants;
 
-namespace Entity.Paddle;
+namespace Entity;
 
 public class Paddle
 {
@@ -41,6 +41,40 @@ public class Paddle
   public void TurnAIOff() {
     IsAI = false;
   }
+
+  public void AddEnglish(Ball ball)
+  {
+    float distO2O = ball.origin.Y + ball.R - (this.origin.Y + HEIGHT / 2);
+    Console.WriteLine($"dist020: {distO2O}");
+    if (Math.Abs(distO2O) > HEIGHT / 3)
+    {
+        float deflectionAngle = 15 
+          + Math.Min(
+            ((Math.Abs(distO2O) - HEIGHT / 6) / (HEIGHT / 3)) * 60,
+            75
+          );
+        deflectionAngle *= distO2O > 0 ? 1 : -1;
+
+        // For reflecting angle properly for paddleTwo
+        // ! BUG, fuxored
+        if (ball.Velocity.X > 0)
+        {
+          Console.WriteLine("entered ball.vel.x > 0");
+          if (deflectionAngle > 0)
+          {
+            deflectionAngle = 180 - deflectionAngle;
+          } else if (deflectionAngle < 0)
+          {
+            deflectionAngle = -180 - deflectionAngle;
+          }
+        }
+        ball.HeadingDegrees = deflectionAngle;
+        Console.WriteLine($"defAng: {deflectionAngle}");
+        Console.WriteLine($"ballHeadingDeg: {ball.HeadingDegrees}");
+    }
+
+  }
+
 
   public void Update() 
   {
