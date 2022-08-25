@@ -16,26 +16,26 @@ public class Ball
   private Texture2D rectTexture;
   private SpriteBatch _spriteBatch;
   private Game _game;
-  public Vector2 _velocity;
 
   public Vector2 Velocity 
   {
-    get { return _velocity; }
-    set { _velocity = value; }
+    get 
+    { 
+      return new Vector2(
+        _speed * (float)Math.Cos(_headingRadians),
+        _speed * (float)Math.Sin(_headingRadians)
+        );
+    }
   }
 
   private float _headingRadians;
   
   public float _speed; 
   public float HeadingDegrees { 
-    get { return _headingRadians * 180 / (float)Math.PI; }
+    get { return (_headingRadians * 180 / (float)Math.PI) % 360; }
     set 
     { 
-      _headingRadians = value * (float)Math.PI / 180;
-      _velocity = new Vector2(
-        _speed * (float)Math.Cos(_headingRadians),
-        _speed * (float)Math.Sin(_headingRadians)
-        );
+      _headingRadians = (value * (float)Math.PI / 180) % 360;
     } 
   }
   private Random rng = new Random();
@@ -54,7 +54,7 @@ public class Ball
 
   public void Update() 
   {
-    origin += _velocity;
+    origin += Velocity;
     if (origin.Y < 0 || origin.Y >= VIRTUAL_HEIGHT - 2 * R)
     {
       InvertVelocityY();
@@ -65,7 +65,7 @@ public class Ball
   {
     ResetPosition();
     ResetSpeed();
-    RandomizeVelocity();
+    RandomizeHeading();
   }
 
   public void ResetPosition()
@@ -81,7 +81,6 @@ public class Ball
   public void SpeedUp()
   {
     _speed = _speed * SPEEDUP;
-    _velocity *= SPEEDUP;
   }
 
   public void RandomizeHeading() {
@@ -91,20 +90,27 @@ public class Ball
       * ( 15 + rng.Next(46) );   // angle [15, 60]
   }
 
-  public void RandomizeVelocity() {
-    RandomizeHeading();
-    _velocity = new Vector2(
-      _speed * (float)Math.Cos(_headingRadians),
-      _speed * (float)Math.Sin(_headingRadians)
-      );
-  }
 
   public void InvertVelocityX() {
-    _velocity.X = -_velocity.X;
+    float deltaAngle = 0.0F;
+    deltaAngle = HeadingDegrees >= 0
+      ? 2 * (90 - HeadingDegrees)
+      : 2 * (-90 - HeadingDegrees);
+    // if (HeadingDegrees >= 0)
+    // {
+    //   deltaAngle = 2 * (90 - HeadingDegrees);
+    // }
+    // else if (HeadingDegrees < 0)
+    // {
+    //   deltaAngle = 2 * (-90 - HeadingDegrees);
+    // }
+      HeadingDegrees += deltaAngle;
   }
 
   public void InvertVelocityY() {
-    _velocity.Y = -_velocity.Y;
+    float deltaAngle = 0.0F;
+    deltaAngle = HeadingDegrees * 2;
+    HeadingDegrees -= deltaAngle;
   }
 
   public void Draw() 

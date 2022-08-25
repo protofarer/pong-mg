@@ -64,9 +64,8 @@ public class Game1 : Game
 
         paddleOne = new Paddle(this, _spriteBatch, 20);
         paddleTwo = new Paddle(this, _spriteBatch, VIRTUAL_WIDTH - 20 - Paddle.WIDTH, true);
-        ball = new Ball(this, _spriteBatch);
-        ball.HeadingDegrees = 180;
-        Console.WriteLine($"ball init vel.x, vel.y: {ball._velocity.X},{ball._velocity.Y}");
+        ball = new Ball(this, _spriteBatch) { HeadingDegrees = 91 };
+        Console.WriteLine($"ball init vel.x, vel.y: {ball.Velocity.X},{ball.Velocity.Y}");
     }
 
     protected override void Update(GameTime gameTime)
