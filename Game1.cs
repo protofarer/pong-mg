@@ -69,7 +69,7 @@ public class Game1 : Game
         // base.Initialize() invokes LoadContent which inits spriteBatch for below
         paddleOne = new Paddle(GraphicsDevice, _spriteBatch, 20);
         paddleTwo = new Paddle(GraphicsDevice, _spriteBatch, VIRTUAL_WIDTH - 20 - Paddle.WIDTH);
-        ball = new Ball(this, _spriteBatch) { HeadingDegrees = 205 };
+        ball = new Ball(GraphicsDevice, _spriteBatch) { HeadingDegrees = 205 };
     }
 
     protected override void LoadContent()

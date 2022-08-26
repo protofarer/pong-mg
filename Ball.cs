@@ -101,8 +101,8 @@ public class Ball
       else
         origin.Y = VIRTUAL_HEIGHT - 2 * R;
 
-      InvertVelocityY();
       sfxWallhit.Play();
+      InvertVelocityY();
     }
   }
 
@@ -111,9 +111,9 @@ public class Ball
     for (int i = 0; i < fillRect.Length; i++) {
         fillRect[i] = Color.White;
     }
+
     rectTexture.SetData(fillRect);
 
     _spriteBatch.Draw(rectTexture, origin, phaseColor);
-
   }
 }
