@@ -59,10 +59,6 @@ public class Game1 : Game
         }
         _netTexture.SetData(_netFill);
 
-
-        scoreOne = 2;
-        scoreTwo = 1;
-        phase = Phase.EndGame;
         base.Initialize();
     }
 
@@ -78,7 +74,7 @@ public class Game1 : Game
         sfxWallhit = Content.Load<SoundEffect>("sounds/wallhit");
 
         paddleOne = new Paddle(this, _spriteBatch, 20);
-        paddleTwo = new Paddle(this, _spriteBatch, VIRTUAL_WIDTH - 20 - Paddle.WIDTH, true);
+        paddleTwo = new Paddle(this, _spriteBatch, VIRTUAL_WIDTH - 20 - Paddle.WIDTH);
         ball = new Ball(this, _spriteBatch) { HeadingDegrees = 205 };
     }
 
@@ -141,14 +137,20 @@ public class Game1 : Game
                 scoreTwo++;
                 sfxScore.Play();
                 roundWinner = 2;
-                phase = Phase.EndRound;
+                if (scoreTwo == 10)
+                    phase = Phase.EndGame;
+                else
+                    phase = Phase.EndRound;
             }
             else if (ball.origin.X >= VIRTUAL_WIDTH - 2 * ball.R)
             {
                 scoreOne++;
                 sfxScore.Play();
                 roundWinner = 1;
-                phase = Phase.EndRound;
+                if (scoreOne == 10)
+                    phase = Phase.EndGame;
+                else
+                    phase = Phase.EndRound;
             }
 
             if (HaveCollided(paddleOne, ball))

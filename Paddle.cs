@@ -87,7 +87,7 @@ public class Paddle
 
   public void ResetPosition()
   {
-    origin.Y = VIRTUAL_HEIGHT / 2 + HEIGHT / 2;
+    origin.Y = VIRTUAL_HEIGHT / 2 - HEIGHT / 2;
   }
 
 
