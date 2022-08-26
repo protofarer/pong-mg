@@ -35,8 +35,15 @@ public class Game1 : Game
     public Game1()
     {
         _graphics = new GraphicsDeviceManager(this);
+
         _graphics.PreferredBackBufferWidth = WINDOW_WIDTH;
         _graphics.PreferredBackBufferHeight = WINDOW_HEIGHT;
+
+        // Fullscreen
+        // _graphics.PreferredBackBufferWidth = (GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width);
+        // _graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
+        // _graphics.IsFullScreen = true;
+
         _graphics.ApplyChanges();
 
         Content.RootDirectory = "Content";
@@ -146,10 +153,12 @@ public class Game1 : Game
             }
 
             ball.Update(dt, sfxWallhit);
+
             if (ball.origin.X < 0)
             {
                 scoreTwo++;
                 roundWinner = 2;
+                volleyCount = 0;
                 sfxScore.Play();
 
                 if (scoreTwo == 10)
@@ -161,6 +170,7 @@ public class Game1 : Game
             {
                 scoreOne++;
                 roundWinner = 1;
+                volleyCount = 0;
                 sfxScore.Play();
 
                 if (scoreOne == 10)
@@ -401,7 +411,16 @@ public class Game1 : Game
         );
         _spriteBatch.Draw(
             _renderTarget, 
-            new Rectangle(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT), 
+            new Rectangle(
+                0, 
+                0, 
+                WINDOW_WIDTH,
+                WINDOW_HEIGHT
+
+                // Fullscreen full rez
+                // GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width, 
+                // GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height
+            ), 
             Color.White
         );
         _spriteBatch.End();
