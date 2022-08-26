@@ -9,7 +9,7 @@ public class Paddle
 {
   public const int WIDTH = 5;
   public const int HEIGHT = 50;
-  public const int SPEED = 5;
+  public const int SPEED = 4;
   public readonly Color color;
   
   public Vector2 origin;

@@ -1,4 +1,4 @@
-// using System;
+using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Audio;
@@ -56,16 +56,6 @@ public class Ball
     ResetBall();
   }
 
-  public void Update(SoundEffect sfxWallhit) 
-  {
-    origin += Velocity;
-    if (origin.Y < 0 || origin.Y >= VIRTUAL_HEIGHT - 2 * R)
-    {
-      InvertVelocityY();
-      sfxWallhit.Play();
-    }
-  }
-
   public void ResetBall()
   {
     ResetPosition();
@@ -108,6 +98,21 @@ public class Ball
     float deltaAngle = 0.0F;
     deltaAngle = HeadingDegrees * 2;
     HeadingDegrees -= deltaAngle;
+  }
+
+  public void Update(SoundEffect sfxWallhit) 
+  {
+    origin += Velocity;
+    if (origin.Y < 0 || origin.Y >= VIRTUAL_HEIGHT - 2 * R)
+    {
+      if (origin.Y < 0)
+        origin.Y = 0;
+      else
+        origin.Y = VIRTUAL_HEIGHT - 2 * R;
+
+      InvertVelocityY();
+      sfxWallhit.Play();
+    }
   }
 
   public void Draw() 
