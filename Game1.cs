@@ -40,10 +40,11 @@ public class Game1 : Game
         _graphics.ApplyChanges();
 
         Content.RootDirectory = "Content";
+        Window.Title = "Pong!";
+
         IsMouseVisible = true;
         IsFixedTimeStep = false;
-        Window.Title = "Pong!";
-        phase = Phase.PrePlay;
+
     }
 
     protected override void Initialize()
@@ -61,7 +62,14 @@ public class Game1 : Game
         }
         _netTexture.SetData(_netFill);
 
+        phase = Phase.PrePlay;
+
         base.Initialize();
+
+        // base.Initialize() invokes LoadContent which inits spriteBatch for below
+        paddleOne = new Paddle(this, _spriteBatch, 20);
+        paddleTwo = new Paddle(this, _spriteBatch, VIRTUAL_WIDTH - 20 - Paddle.WIDTH);
+        ball = new Ball(this, _spriteBatch) { HeadingDegrees = 205 };
     }
 
     protected override void LoadContent()
@@ -74,19 +82,17 @@ public class Game1 : Game
         sfxPaddlehit = Content.Load<SoundEffect>("sounds/paddlehit");
         sfxScore = Content.Load<SoundEffect>("sounds/score");
         sfxWallhit = Content.Load<SoundEffect>("sounds/wallhit");
-
-        paddleOne = new Paddle(this, _spriteBatch, 20);
-        paddleTwo = new Paddle(this, _spriteBatch, VIRTUAL_WIDTH - 20 - Paddle.WIDTH);
-        ball = new Ball(this, _spriteBatch) { HeadingDegrees = 205 };
     }
 
     protected override void Update(GameTime gameTime)
     {
-        KeyboardState newKBState = Keyboard.GetState();
         double dt = gameTime.ElapsedGameTime.TotalSeconds;
 
-        if (oldKBState.IsKeyDown(Keys.Q) && newKBState.IsKeyUp(Keys.Q))
-            isDebugOverlay = !isDebugOverlay;
+        KeyboardState newKBState = Keyboard.GetState();
+
+        if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed 
+            || Keyboard.GetState().IsKeyDown(Keys.Escape))
+            Exit();
 
         if (oldKBState.IsKeyDown(Keys.R) && newKBState.IsKeyUp(Keys.R))
             Program.NewGame();
@@ -94,15 +100,14 @@ public class Game1 : Game
         if (oldKBState.IsKeyDown(Keys.B) && newKBState.IsKeyUp(Keys.B))
             phase = phase == Phase.Play ? Phase.Pause : Phase.Play;
 
+        if (oldKBState.IsKeyDown(Keys.Q) && newKBState.IsKeyUp(Keys.Q))
+            isDebugOverlay = !isDebugOverlay;
+
         if (oldKBState.IsKeyDown(Keys.T) && newKBState.IsKeyUp(Keys.T))
         {
             paddleOne.TurnAIOff();
             paddleTwo.TurnAIOff();
         }
-
-        if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed 
-            || Keyboard.GetState().IsKeyDown(Keys.Escape))
-            Exit();
 
         if (phase == Phase.Play) {
             if (paddleOne.IsAI) {
@@ -133,12 +138,12 @@ public class Game1 : Game
             }
 
             ball.Update(dt, sfxWallhit);
-            // ? emit score event for respective player
             if (ball.origin.X < 0)
             {
                 scoreTwo++;
-                sfxScore.Play();
                 roundWinner = 2;
+                sfxScore.Play();
+
                 if (scoreTwo == 10)
                     phase = Phase.EndGame;
                 else
@@ -147,8 +152,9 @@ public class Game1 : Game
             else if (ball.origin.X >= VIRTUAL_WIDTH - 2 * ball.R)
             {
                 scoreOne++;
-                sfxScore.Play();
                 roundWinner = 1;
+                sfxScore.Play();
+
                 if (scoreOne == 10)
                     phase = Phase.EndGame;
                 else
@@ -197,10 +203,7 @@ public class Game1 : Game
         else if (phase == Phase.PrePlay)
         {
             if (Keyboard.GetState().IsKeyDown(Keys.Enter))
-            {
                 phase = Phase.Play;
-            }
-
         }
 
         oldKBState = newKBState;
@@ -210,9 +213,8 @@ public class Game1 : Game
 
     protected override void Draw(GameTime gameTime)
     {
-        // * GPU render to _renderTarget
+        // GPU render to _renderTarget
         GraphicsDevice.SetRenderTarget(_renderTarget);
-
 
         // * START: Render all
 
@@ -225,7 +227,10 @@ public class Game1 : Game
         _spriteBatch.DrawString(
             sfontSilkscreen, 
             $"{scoreOne}", 
-            new Vector2((float)(VIRTUAL_WIDTH * 0.2), (float)(VIRTUAL_HEIGHT * 0.05)), 
+            new Vector2(
+                (float)(VIRTUAL_WIDTH * 0.2), 
+                (float)(VIRTUAL_HEIGHT * 0.05)
+            ), 
             phase == Phase.EndGame 
                 ? scoreOne > scoreTwo
                     ? Color.Green
@@ -236,7 +241,10 @@ public class Game1 : Game
         _spriteBatch.DrawString(
             sfontSilkscreen, 
             $"{scoreTwo}", 
-            new Vector2((float)(VIRTUAL_WIDTH * 0.7), (float)(VIRTUAL_HEIGHT * 0.05)), 
+            new Vector2(
+                (float)(VIRTUAL_WIDTH * 0.7), 
+                (float)(VIRTUAL_HEIGHT * 0.05)
+            ), 
             phase == Phase.EndGame 
                 ? scoreOne > scoreTwo
                     ? Color.Red
@@ -252,15 +260,36 @@ public class Game1 : Game
 
         if (isDebugOverlay)
         {
-            _spriteBatch.DrawString(sfontDebug, $"fps: {frameRate}", new Vector2(VIRTUAL_WIDTH - 75, 3), Color.Green);
-            _spriteBatch.DrawString(sfontDebug, $"sp_b: {ball._speed}", new Vector2(VIRTUAL_WIDTH - 75, 10), Color.Green);
+            _spriteBatch.DrawString(
+                sfontDebug, 
+                $"fps: {frameRate}", 
+                new Vector2(VIRTUAL_WIDTH - 75, 3), 
+                Color.Green
+            );
+            _spriteBatch.DrawString(
+                sfontDebug, 
+                $"sp_b: {ball._speed}", 
+                new Vector2(VIRTUAL_WIDTH - 75, 10), 
+                Color.Green
+            );
         }
 
         paddleOne.Draw( phase == Phase.PrePlay ? Color.Blue : Color.White );
         paddleTwo.Draw( phase == Phase.PrePlay ? Color.Blue : Color.White );
         ball.Draw( phase == Phase.PrePlay ? Color.Blue : Color.White );
 
-        if (phase == Phase.Pause)
+        if (phase == Phase.PrePlay)
+        {
+            _spriteBatch.DrawString(
+                sfontSilkscreen, 
+                "Hit Enter to Play!", 
+                new Vector2(
+                    VIRTUAL_WIDTH * 0.5F - (12 * 18), 
+                    VIRTUAL_HEIGHT * 0.25F), 
+                Color.White
+            );
+        }
+        else if (phase == Phase.Pause)
         {
             _spriteBatch.DrawString(
                 sfontSilkscreen, 
@@ -270,17 +299,6 @@ public class Game1 : Game
                     VIRTUAL_HEIGHT / 2 - 25
                 ), 
                 Color.Red
-            );
-        }
-        else if (phase == Phase.PrePlay)
-        {
-            _spriteBatch.DrawString(
-                sfontSilkscreen, 
-                "Hit Enter to Play!", 
-                new Vector2(
-                    VIRTUAL_WIDTH * 0.5F - (12 * 18), 
-                    VIRTUAL_HEIGHT * 0.25F), 
-                Color.White
             );
         }
         else if (phase == Phase.EndRound)
@@ -304,9 +322,9 @@ public class Game1 : Game
                     Color.Green
                 );
 
+            // Praise a good volley
             if (volleyCount >= volleyMin)
             {
-                // Praise a good volley
                 _spriteBatch.DrawString(
                     sfontSilkscreen, 
                     "Nice", 
@@ -361,10 +379,10 @@ public class Game1 : Game
         }
 
         _spriteBatch.End();
+
         // * END: Render all
 
-
-        // * Render to screen
+        // Render to screen
         GraphicsDevice.SetRenderTarget(null);
 
         //  Set hard pixel edges
@@ -373,7 +391,11 @@ public class Game1 : Game
             BlendState.AlphaBlend, 
             SamplerState.PointClamp
         );
-        _spriteBatch.Draw(_renderTarget, new Rectangle(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT), Color.White);
+        _spriteBatch.Draw(
+            _renderTarget, 
+            new Rectangle(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT), 
+            Color.White
+        );
         _spriteBatch.End();
 
         base.Draw(gameTime);
