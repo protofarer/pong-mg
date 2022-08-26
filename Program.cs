@@ -9,8 +9,8 @@ public static class Program
 
   public static void NewGame()
   {
-    Console.WriteLine($"game: {Program.game}");
-    using var game = new pong_mg.Game1();
-    game.Run();
+    // Program.game?.Exit();     // doesnt work
+    Program.game = new pong_mg.Game1();
+    Program.game.Run();
   }
 }

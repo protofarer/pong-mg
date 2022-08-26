@@ -1,13 +1,14 @@
 using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Audio;
 using static Constants;
 
 namespace Entity;
 
 public class Ball
 {
-  public int R = 1;
+  public int R = 3;
 
   public const float SPEEDUP = 1.2F;
   public readonly Color color;
@@ -49,15 +50,17 @@ public class Ball
     color = Color.White;
     fillRect = new Color[4 * R * R];
 
+
     ResetBall();
   }
 
-  public void Update() 
+  public void Update(SoundEffect sfxWallhit) 
   {
     origin += Velocity;
     if (origin.Y < 0 || origin.Y >= VIRTUAL_HEIGHT - 2 * R)
     {
       InvertVelocityY();
+      sfxWallhit.Play();
     }
   }
 

@@ -85,6 +85,11 @@ public class Paddle
     ball.SpeedUp();
   }
 
+  public void ResetPosition()
+  {
+    origin.Y = VIRTUAL_HEIGHT / 2 + HEIGHT / 2;
+  }
+
 
   public void Update() 
   {

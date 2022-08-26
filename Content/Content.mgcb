@@ -27,3 +27,21 @@
 /processorParam:TextureFormat=Compressed
 /build:silkscreen.spritefont
 
+#begin sounds/paddlehit.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sounds/paddlehit.wav
+
+#begin sounds/score.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sounds/score.wav
+
+#begin sounds/wallhit.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sounds/wallhit.wav
+
