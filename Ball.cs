@@ -10,7 +10,7 @@ public class Ball
 {
   public int R = 3;
 
-  public const float SPEEDUP = 1.2F;
+  public const float SPEEDUP = 1.1F;
   private const int _initSpeed = 3;
   public readonly Color color;
   public Vector2 origin;
