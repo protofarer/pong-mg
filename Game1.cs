@@ -133,7 +133,7 @@ public class Game1 : Game
                     paddleTwo.MoveDown(dt);
             }
 
-            ball.Update(sfxWallhit);
+            ball.Update(dt, sfxWallhit);
             // ? emit score event for respective player
             if (ball.origin.X < 0)
             {

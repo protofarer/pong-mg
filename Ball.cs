@@ -11,13 +11,14 @@ public class Ball
   public int R = 3;
 
   public const float SPEEDUP = 1.1F;
-  private const int _initSpeed = 3;
+  private const int _initSpeed = 100;
   public readonly Color color;
   public Vector2 origin;
   private Color[] fillRect;
   private Texture2D rectTexture;
   private SpriteBatch _spriteBatch;
   private Game _game;
+  private Random rng = new Random();
   private float _headingRadians;
   public float _speed; 
 
@@ -41,8 +42,6 @@ public class Ball
       _headingRadians = (value * (float)Math.PI / 180) % 360;
     } 
   }
-  private Random rng = new Random();
-
 
   public Ball(Game game, SpriteBatch spriteBatch)
   {
@@ -51,7 +50,6 @@ public class Ball
     rectTexture = new Texture2D(game.GraphicsDevice, 2 * R, 2 * R);
     color = Color.White;
     fillRect = new Color[4 * R * R];
-
 
     ResetBall();
   }
@@ -100,9 +98,9 @@ public class Ball
     HeadingDegrees -= deltaAngle;
   }
 
-  public void Update(SoundEffect sfxWallhit) 
+  public void Update(double dt, SoundEffect sfxWallhit) 
   {
-    origin += Velocity;
+    origin += Velocity * (float)dt;
     if (origin.Y < 0 || origin.Y >= VIRTUAL_HEIGHT - 2 * R)
     {
       if (origin.Y < 0)
