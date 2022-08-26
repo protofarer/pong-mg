@@ -36,13 +36,13 @@ public class Game1 : Game
     {
         _graphics = new GraphicsDeviceManager(this);
 
-        _graphics.PreferredBackBufferWidth = WINDOW_WIDTH;
-        _graphics.PreferredBackBufferHeight = WINDOW_HEIGHT;
+        // _graphics.PreferredBackBufferWidth = WINDOW_WIDTH;
+        // _graphics.PreferredBackBufferHeight = WINDOW_HEIGHT;
 
         // Fullscreen
-        // _graphics.PreferredBackBufferWidth = (GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width);
-        // _graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
-        // _graphics.IsFullScreen = true;
+        _graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
+        _graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
+        _graphics.IsFullScreen = true;
 
         _graphics.ApplyChanges();
 
@@ -414,12 +414,12 @@ public class Game1 : Game
             new Rectangle(
                 0, 
                 0, 
-                WINDOW_WIDTH,
-                WINDOW_HEIGHT
+                // WINDOW_WIDTH,
+                // WINDOW_HEIGHT
 
-                // Fullscreen full rez
-                // GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width, 
-                // GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height
+                // full rez
+                GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width, 
+                GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height
             ), 
             Color.White
         );
