@@ -1,4 +1,4 @@
-using System;
+// using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Audio;
@@ -11,6 +11,7 @@ public class Ball
   public int R = 3;
 
   public const float SPEEDUP = 1.2F;
+  private const int _initSpeed = 3;
   public readonly Color color;
   public Vector2 origin;
   private Color[] fillRect;
@@ -19,6 +20,7 @@ public class Ball
   private Game _game;
   private float _headingRadians;
   public float _speed; 
+
   public Vector2 Velocity 
   {
     get 
@@ -78,7 +80,7 @@ public class Ball
 
   public void ResetSpeed()
   {
-    _speed = 2;
+    _speed = _initSpeed;
   }
 
   public void SpeedUp()
