@@ -29,6 +29,8 @@ public class Game1 : Game
     private SoundEffect sfxPaddlehit;
     private SoundEffect sfxScore;
     private SoundEffect sfxWallhit;
+    private const int volleyMin = 8;
+    private int volleyCount = 0;
 
     public Game1()
     {
@@ -156,13 +158,12 @@ public class Game1 : Game
 
             if (HaveCollided(paddleOne, ball))
             {
-                Console.WriteLine("P1 collision");
                 paddleOne.HitBall(ball);
 
                 // Paddles don't know if they're player one or two
                 ball.origin.X = paddleOne.origin.X + Paddle.WIDTH + 1;
-
                 sfxPaddlehit.Play();
+                volleyCount++;
             }
             
             if (HaveCollided(paddleTwo, ball))
@@ -172,8 +173,8 @@ public class Game1 : Game
 
                 // Paddles don't know if they're player one or two
                 ball.origin.X = paddleTwo.origin.X - 2 * ball.R - 1;
-
                 sfxPaddlehit.Play();
+                volleyCount++;
             }
         } 
         else if (phase == Phase.EndRound)
@@ -259,14 +260,13 @@ public class Game1 : Game
                 "PAUSED", 
                 new Vector2(
                     VIRTUAL_WIDTH * 0.2F, 
-                    VIRTUAL_HEIGHT / 2 -25
+                    VIRTUAL_HEIGHT / 2 - 25
                 ), 
                 Color.Red
             );
         }
         else if (phase == Phase.EndRound)
         {
-            // TODO congratulate winner
             if (roundWinner == 1)
                 _spriteBatch.DrawString(
                     sfontDebug, 
@@ -286,11 +286,35 @@ public class Game1 : Game
                     Color.Green
                 );
 
+            if (volleyCount >= volleyMin)
+            {
+                // Praise a good volley
+                _spriteBatch.DrawString(
+                    sfontSilkscreen, 
+                    "Nice", 
+                    new Vector2(
+                        VIRTUAL_WIDTH * 0.25F, 
+                        VIRTUAL_HEIGHT / 2 - 45
+                    ), 
+                    Color.White
+                );
+
+                _spriteBatch.DrawString(
+                    sfontSilkscreen, 
+                    "Volley!", 
+                    new Vector2(
+                        VIRTUAL_WIDTH * 0.45F, 
+                        VIRTUAL_HEIGHT / 2 + 5
+                    ), 
+                    Color.White
+                );
+            }
+
             _spriteBatch.DrawString(
                 sfontDebug, 
                 "[Enter] for next round", 
                 new Vector2(
-                    VIRTUAL_WIDTH * 0.2F, 
+                    VIRTUAL_WIDTH * 0.5F - (22 * 4),        // 22=charCount, 4=approxCharWidth
                     VIRTUAL_HEIGHT * 0.75F), 
                 Color.Red
             );
