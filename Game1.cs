@@ -3,34 +3,34 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Audio;
+
 using Entity;
 using static Constants;
-using static Program;
 using static Physics;
+
 namespace pong_mg;
 
 public class Game1 : Game
 {
     private GraphicsDeviceManager _graphics;
-    private SpriteBatch _spriteBatch;
-    private Paddle paddleOne, paddleTwo;
-    private Ball ball;
-    private SpriteFont sfontSilkscreen;
-    private SpriteFont sfontDebug;
-    private int scoreTwo, scoreOne;
     private RenderTarget2D _renderTarget;
+    private SpriteBatch _spriteBatch;
     private bool isDebugOverlay = false;
     private KeyboardState oldKBState;
-
+    private SpriteFont sfontSilkscreen;
+    private SpriteFont sfontDebug;
+    private Phase phase;
+    private int scoreTwo, scoreOne;
+    private int roundWinner;     // 0 for none, 1 for playerOne, 2 for playerTwo
+    private const int volleyMin = 8;
+    private int volleyCount = 0;
+    private Paddle paddleOne, paddleTwo;
+    private Ball ball;
     private Color[] _netFill = new Color[VIRTUAL_HEIGHT];
     private Texture2D _netTexture;
-    private Phase phase;
-    private int roundWinner;     // 0 for none, 1 for playerOne, 2 for playerTwo
     private SoundEffect sfxPaddlehit;
     private SoundEffect sfxScore;
     private SoundEffect sfxWallhit;
-    private const int volleyMin = 8;
-    private int volleyCount = 0;
 
     public Game1()
     {
@@ -43,7 +43,7 @@ public class Game1 : Game
         IsMouseVisible = true;
         IsFixedTimeStep = false;
         Window.Title = "Pong!";
-        phase = Phase.Play;
+        phase = Phase.PrePlay;
     }
 
     protected override void Initialize()
@@ -104,7 +104,6 @@ public class Game1 : Game
             || Keyboard.GetState().IsKeyDown(Keys.Escape))
             Exit();
 
-        // ? Phase.Preplay
         if (phase == Phase.Play) {
             if (paddleOne.IsAI) {
                 if (ball.Center.Y < paddleOne.Center.Y)
@@ -195,6 +194,14 @@ public class Game1 : Game
                 phase = Phase.EndRound;
             }
         }
+        else if (phase == Phase.PrePlay)
+        {
+            if (Keyboard.GetState().IsKeyDown(Keys.Enter))
+            {
+                phase = Phase.Play;
+            }
+
+        }
 
         oldKBState = newKBState;
 
@@ -249,9 +256,9 @@ public class Game1 : Game
             _spriteBatch.DrawString(sfontDebug, $"sp_b: {ball._speed}", new Vector2(VIRTUAL_WIDTH - 75, 10), Color.Green);
         }
 
-        paddleOne.Draw();
-        paddleTwo.Draw();
-        ball.Draw();
+        paddleOne.Draw( phase == Phase.PrePlay ? Color.Blue : Color.White );
+        paddleTwo.Draw( phase == Phase.PrePlay ? Color.Blue : Color.White );
+        ball.Draw( phase == Phase.PrePlay ? Color.Blue : Color.White );
 
         if (phase == Phase.Pause)
         {
@@ -263,6 +270,17 @@ public class Game1 : Game
                     VIRTUAL_HEIGHT / 2 - 25
                 ), 
                 Color.Red
+            );
+        }
+        else if (phase == Phase.PrePlay)
+        {
+            _spriteBatch.DrawString(
+                sfontSilkscreen, 
+                "Hit Enter to Play!", 
+                new Vector2(
+                    VIRTUAL_WIDTH * 0.5F - (12 * 18), 
+                    VIRTUAL_HEIGHT * 0.25F), 
+                Color.White
             );
         }
         else if (phase == Phase.EndRound)
@@ -363,7 +381,7 @@ public class Game1 : Game
 }
 
 public enum Phase {
-    Preplay,
+    PrePlay,
     Play,
     Pause,
     EndRound,

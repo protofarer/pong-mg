@@ -1,5 +1,4 @@
-﻿using System;
-public static class Program
+﻿public static class Program
 {
   private static pong_mg.Game1 game;
   static void Main(string[] args)

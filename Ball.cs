@@ -113,14 +113,14 @@ public class Ball
     }
   }
 
-  public void Draw() 
+  public void Draw(Color phaseColor) 
   {
     for (int i = 0; i < fillRect.Length; i++) {
         fillRect[i] = Color.White;
     }
     rectTexture.SetData(fillRect);
 
-    _spriteBatch.Draw(rectTexture, origin, color);
+    _spriteBatch.Draw(rectTexture, origin, phaseColor);
 
   }
 }
