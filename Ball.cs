@@ -9,18 +9,11 @@ namespace Entity;
 public class Ball
 {
   public int R = 3;
-  public const float SPEEDUP = 1.05F;
   private const int _initSpeed = 200;
-  public readonly Color color;
+  public const float SPEEDUP = 1.05F;
   public Vector2 origin;
-  private Color[] fillRect;
-  private Texture2D rectTexture;
-  private SpriteBatch _spriteBatch;
-  private Game _game;
-  private Random rng = new Random();
   private float _headingRadians;
   public float _speed; 
-
   public Vector2 Velocity 
   {
     get 
@@ -31,9 +24,7 @@ public class Ball
         );
     }
   }
-
   public Vector2 Center => new Vector2(origin.X + R, origin.Y + R);
-
   public float HeadingDegrees { 
     get { return (_headingRadians * 180 / (float)Math.PI) % 360; }
     set 
@@ -41,12 +32,16 @@ public class Ball
       _headingRadians = (value * (float)Math.PI / 180) % 360;
     } 
   }
+  public readonly Color color;
+  private Color[] fillRect;
+  private Texture2D rectTexture;
+  private SpriteBatch _spriteBatch;
+  private Random rng = new Random();
 
-  public Ball(Game game, SpriteBatch spriteBatch)
+  public Ball(GraphicsDevice gfxDev, SpriteBatch spriteBatch)
   {
-    _game = game;
     _spriteBatch = spriteBatch;
-    rectTexture = new Texture2D(game.GraphicsDevice, 2 * R, 2 * R);
+    rectTexture = new Texture2D(gfxDev, 2 * R, 2 * R);
     color = Color.White;
     fillRect = new Color[4 * R * R];
 
@@ -72,29 +67,28 @@ public class Ball
 
   public void SpeedUp()
   {
-    _speed = _speed * SPEEDUP;
+    _speed *= SPEEDUP;
   }
 
   public void RandomizeHeading() {
     HeadingDegrees = 
-      ( rng.Next(2) * 180 )  // pos or neg X
-      + ( rng.Next(1, 2) * -1 )      // pos or neg Y
-      * ( 15 + rng.Next(46) );   // angle [15, 60]
+      ( rng.Next(2) * 180 )       // pos or neg X
+      + ( rng.Next(1, 2) * -1 )   // pos or neg Y
+      * ( 15 + rng.Next(46) );    // angle [15, 60]
   }
-
 
   public void InvertVelocityX() {
     float deltaAngle = 0.0F;
+
     deltaAngle = HeadingDegrees >= 0
       ? 2 * (90 - HeadingDegrees)
       : 2 * (-90 - HeadingDegrees);
+
     HeadingDegrees += deltaAngle;
   }
 
   public void InvertVelocityY() {
-    float deltaAngle = 0.0F;
-    deltaAngle = HeadingDegrees * 2;
-    HeadingDegrees -= deltaAngle;
+    HeadingDegrees -= HeadingDegrees * 2;
   }
 
   public void Update(double dt, SoundEffect sfxWallhit) 
