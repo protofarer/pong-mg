@@ -58,6 +58,11 @@ public class Game1 : Game
                 _netFill[i] = Color.White;
         }
         _netTexture.SetData(_netFill);
+
+
+        scoreOne = 2;
+        scoreTwo = 1;
+        phase = Phase.EndGame;
         base.Initialize();
     }
 
