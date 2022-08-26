@@ -9,7 +9,7 @@ namespace Entity;
 public class Ball
 {
   public int R = 3;
-  public const float SPEEDUP = 1.1F;
+  public const float SPEEDUP = 1.05F;
   private const int _initSpeed = 200;
   public readonly Color color;
   public Vector2 origin;

@@ -67,8 +67,8 @@ public class Game1 : Game
         base.Initialize();
 
         // base.Initialize() invokes LoadContent which inits spriteBatch for below
-        paddleOne = new Paddle(this, _spriteBatch, 20);
-        paddleTwo = new Paddle(this, _spriteBatch, VIRTUAL_WIDTH - 20 - Paddle.WIDTH);
+        paddleOne = new Paddle(GraphicsDevice, _spriteBatch, 20);
+        paddleTwo = new Paddle(GraphicsDevice, _spriteBatch, VIRTUAL_WIDTH - 20 - Paddle.WIDTH);
         ball = new Ball(this, _spriteBatch) { HeadingDegrees = 205 };
     }
 
@@ -105,8 +105,16 @@ public class Game1 : Game
 
         if (oldKBState.IsKeyDown(Keys.T) && newKBState.IsKeyUp(Keys.T))
         {
-            paddleOne.TurnAIOff();
-            paddleTwo.TurnAIOff();
+            if (paddleOne.IsAI || paddleTwo.IsAI)
+            {
+                paddleOne.TurnAIOff();
+                paddleTwo.TurnAIOff();
+            }
+            else
+            {
+                paddleOne.TurnAIOn();
+                paddleTwo.TurnAIOn();
+            }
         }
 
         if (phase == Phase.Play) {
@@ -274,8 +282,8 @@ public class Game1 : Game
             );
         }
 
-        paddleOne.Draw( phase == Phase.PrePlay ? Color.Blue : Color.White );
-        paddleTwo.Draw( phase == Phase.PrePlay ? Color.Blue : Color.White );
+        paddleOne.Draw(phase);
+        paddleTwo.Draw(phase);
         ball.Draw( phase == Phase.PrePlay ? Color.Blue : Color.White );
 
         if (phase == Phase.PrePlay)
