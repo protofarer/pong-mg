@@ -9,11 +9,9 @@ public class Paddle
 {
   public const int WIDTH = 5;
   public const int HEIGHT = 50;
-  public const int SPEED = 4;
+  public const int SPEED = 300;
   public readonly Color color;
-  
   public Vector2 origin;
-
   public Vector2 Center => new Vector2(
     origin.X + WIDTH / 2, 
     origin.Y + HEIGHT / 2
@@ -22,7 +20,6 @@ public class Paddle
   private Texture2D rectTexture;
   private SpriteBatch _spriteBatch;
   private Game _game;
-
   public bool IsAI { get; private set; }
 
   public Paddle(Game game, SpriteBatch spriteBatch, int x, bool isAI = false)
@@ -35,12 +32,12 @@ public class Paddle
     IsAI = isAI;
   }
 
-  public void MoveUp() {
-    origin.Y = Math.Max(0, origin.Y - SPEED);
+  public void MoveUp(double dt) {
+    origin.Y = Math.Max(0, (float)(origin.Y - SPEED * dt));
   }
 
-  public void MoveDown() {
-    origin.Y = Math.Min(VIRTUAL_HEIGHT - HEIGHT, origin.Y + SPEED);
+  public void MoveDown(double dt) {
+    origin.Y = Math.Min(VIRTUAL_HEIGHT - HEIGHT, (float)(origin.Y + SPEED * dt));
   }
 
   public void TurnAIOff() {
@@ -57,7 +54,6 @@ public class Paddle
 
       deflectionAngle *= distO2O > 0 ? 1 : -1;
 
-
       // Making use of ball's invert method, otherwise could set deflectionAngle correctly before this block
       // TODO refactor
       if (ball.Velocity.X > 0)
@@ -67,15 +63,11 @@ public class Paddle
       }
       else
         ball.HeadingDegrees = deflectionAngle;
-
-      Console.WriteLine($"defAng: {deflectionAngle}");
-      Console.WriteLine($"ballHeadingDeg: {ball.HeadingDegrees}");
   }
 
   public void HitBall(Ball ball)
   {
     float distO2O = ball.Center.Y - Center.Y;
-    Console.WriteLine($"dist020: {distO2O}");
 
     if (Math.Abs(distO2O) > (float)HEIGHT / 6)
       AddEnglish(ball, distO2O);
@@ -103,6 +95,5 @@ public class Paddle
     rectTexture.SetData(fillRect);
 
     _spriteBatch.Draw(rectTexture, origin, color);
-
   }
 }

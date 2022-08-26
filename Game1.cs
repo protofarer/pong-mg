@@ -81,6 +81,7 @@ public class Game1 : Game
     protected override void Update(GameTime gameTime)
     {
         KeyboardState newKBState = Keyboard.GetState();
+        double dt = gameTime.ElapsedGameTime.TotalSeconds;
 
         if (oldKBState.IsKeyDown(Keys.Q) && newKBState.IsKeyUp(Keys.Q))
             isDebugOverlay = !isDebugOverlay;
@@ -105,29 +106,29 @@ public class Game1 : Game
         if (phase == Phase.Play) {
             if (paddleOne.IsAI) {
                 if (ball.Center.Y < paddleOne.Center.Y)
-                    paddleOne.MoveUp();
+                    paddleOne.MoveUp(dt);
                 else if (ball.Center.Y > paddleOne.Center.Y)
-                    paddleOne.MoveDown();
+                    paddleOne.MoveDown(dt);
             }
             else
             {
                 if (Keyboard.GetState().IsKeyDown(Keys.W)) 
-                    paddleOne.MoveUp();
+                    paddleOne.MoveUp(dt);
                 else if (Keyboard.GetState().IsKeyDown(Keys.S)) 
-                    paddleOne.MoveDown();
+                    paddleOne.MoveDown(dt);
             }
 
             if (paddleTwo.IsAI) {
                 if (ball.Center.Y < paddleTwo.Center.Y)
-                    paddleTwo.MoveUp();
+                    paddleTwo.MoveUp(dt);
                 else if (ball.Center.Y > paddleTwo.Center.Y)
-                    paddleTwo.MoveDown();
+                    paddleTwo.MoveDown(dt);
             }
             else {
                 if (Keyboard.GetState().IsKeyDown(Keys.Up)) 
-                    paddleTwo.MoveUp();
+                    paddleTwo.MoveUp(dt);
                 else if (Keyboard.GetState().IsKeyDown(Keys.Down)) 
-                    paddleTwo.MoveDown();
+                    paddleTwo.MoveDown(dt);
             }
 
             ball.Update(sfxWallhit);
