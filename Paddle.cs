@@ -8,7 +8,7 @@ namespace Entity;
 public class Paddle
 {
   public const int WIDTH = 5;
-  public const int HEIGHT = 40;
+  public const int HEIGHT = 50;
   public const int SPEED = 5;
   public readonly Color color;
   

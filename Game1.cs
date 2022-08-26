@@ -60,6 +60,9 @@ public class Game1 : Game
         _netTexture.SetData(_netFill);
 
 
+        scoreOne = 2;
+        scoreTwo = 1;
+        phase = Phase.EndGame;
         base.Initialize();
     }
 
@@ -102,7 +105,7 @@ public class Game1 : Game
             || Keyboard.GetState().IsKeyDown(Keys.Escape))
             Exit();
 
-        // TODO Phase.Preplay
+        // ? Phase.Preplay
         if (phase == Phase.Play) {
             if (paddleOne.IsAI) {
                 if (ball.Center.Y < paddleOne.Center.Y)
@@ -180,6 +183,14 @@ public class Game1 : Game
                 phase = Phase.Play;
             }
         }
+        else if (phase == Phase.EndGame)
+        {
+            if (Keyboard.GetState().IsKeyDown(Keys.Enter))
+            {
+                scoreOne = scoreTwo = 0;
+                phase = Phase.EndRound;
+            }
+        }
 
         oldKBState = newKBState;
 
@@ -204,14 +215,22 @@ public class Game1 : Game
             sfontSilkscreen, 
             $"{scoreOne}", 
             new Vector2((float)(VIRTUAL_WIDTH * 0.2), (float)(VIRTUAL_HEIGHT * 0.05)), 
-            Color.White
+            phase == Phase.EndGame 
+                ? scoreOne > scoreTwo
+                    ? Color.Green
+                    : Color.Red
+                : Color.White
         );
 
         _spriteBatch.DrawString(
             sfontSilkscreen, 
             $"{scoreTwo}", 
             new Vector2((float)(VIRTUAL_WIDTH * 0.7), (float)(VIRTUAL_HEIGHT * 0.05)), 
-            Color.White
+            phase == Phase.EndGame 
+                ? scoreOne > scoreTwo
+                    ? Color.Red
+                    : Color.Green
+                : Color.White
         );
 
         _spriteBatch.Draw(
@@ -273,6 +292,28 @@ public class Game1 : Game
                 Color.Red
             );
         }
+        else if (phase == Phase.EndGame)
+        {
+            _spriteBatch.DrawString(
+                sfontSilkscreen, 
+                $"Player {(scoreOne > scoreTwo ? "One" : "Two")}", 
+                new Vector2(
+                    VIRTUAL_WIDTH * 0.25F, 
+                    VIRTUAL_HEIGHT / 2 - 45
+                ), 
+                Color.Green
+            );
+
+            _spriteBatch.DrawString(
+                sfontSilkscreen, 
+                "Wins!", 
+                new Vector2(
+                    VIRTUAL_WIDTH * 0.4F, 
+                    VIRTUAL_HEIGHT / 2 + 25
+                ), 
+                Color.Green
+            );
+        }
 
         _spriteBatch.End();
         // * END: Render all
@@ -298,5 +339,6 @@ public enum Phase {
     Preplay,
     Play,
     Pause,
-    EndRound
+    EndRound,
+    EndGame
 }
